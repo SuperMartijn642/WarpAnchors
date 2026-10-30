@@ -1,5 +1,6 @@
 package com.supermartijn642.warpanchors.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.supermartijn642.warpanchors.content.WarpHandler;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -18,5 +19,13 @@ public class LevelRendererMixin {
     )
     private void submitFeatures(LevelRenderState levelRenderState, SubmitNodeCollector submitNodeCollector, boolean renderOutline, CallbackInfo ci){
         WarpHandler.submitRenderState(submitNodeCollector, levelRenderState.cameraRenderState);
+    }
+
+    @ModifyReturnValue(
+        method = "frameHasAlwaysOnTopGizmos",
+        at = @At("RETURN")
+    )
+    private boolean frameHasAlwaysOnTopGizmos(boolean original) {
+        return original || WarpHandler.submittedAlwaysOnTopNodes;
     }
 }

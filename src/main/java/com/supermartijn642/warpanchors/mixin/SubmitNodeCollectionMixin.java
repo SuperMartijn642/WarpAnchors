@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.supermartijn642.warpanchors.extension.SubmitNodeCollectorExtension;
 import net.minecraft.client.renderer.SubmitNodeCollection;
+import net.minecraft.client.renderer.feature.phase.FeatureRenderPhase;
 import net.minecraft.client.renderer.feature.phase.SimpleFeatureRenderPhase;
 import net.minecraft.client.renderer.feature.phase.TranslucentFeatureRenderPhase;
 import net.minecraft.client.renderer.feature.submit.SubmitNode;
@@ -19,7 +20,7 @@ public class SubmitNodeCollectionMixin implements SubmitNodeCollectorExtension {
 
     @Final
     @Shadow
-    private SimpleFeatureRenderPhase alwaysOnTop;
+    private SimpleFeatureRenderPhase alwaysOnTopGizmos;
 
     @Unique
     private boolean forceAlwaysOnTop;
@@ -29,21 +30,18 @@ public class SubmitNodeCollectionMixin implements SubmitNodeCollectorExtension {
         this.forceAlwaysOnTop = alwaysOnTop;
     }
 
-    @WrapWithCondition(
+    @ModifyReceiver(
         method = {
             "submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;Ljava/util/List;[IIII)V",
             "submitBlockModel(Lcom/mojang/blaze3d/vertex/PoseStack;Ljava/util/function/Function;ZLjava/util/List;Lnet/fabricmc/fabric/api/client/renderer/v1/mesh/Mesh;[IIII)V"
         },
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/feature/phase/TranslucentFeatureRenderPhase;submit(Lnet/minecraft/client/renderer/feature/submit/TranslucentSubmit;)V"
+            target = "Lnet/minecraft/client/renderer/feature/phase/FeatureRenderPhase;submit(Lnet/minecraft/client/renderer/feature/submit/SubmitNode;)V"
         )
     )
-    private boolean interceptTranslucentBlocks(TranslucentFeatureRenderPhase phase, TranslucentSubmit node){
-        if(!this.forceAlwaysOnTop)
-            return true;
-        this.alwaysOnTop.submit(node);
-        return false;
+    private FeatureRenderPhase<?> interceptTranslucentBlocks(FeatureRenderPhase<?> phase, SubmitNode node){
+        return this.forceAlwaysOnTop ? this.alwaysOnTopGizmos : phase;
     }
 
     @ModifyReceiver(
@@ -58,11 +56,11 @@ public class SubmitNodeCollectionMixin implements SubmitNodeCollectorExtension {
         )
     )
     private SimpleFeatureRenderPhase interceptSolidBlocks(SimpleFeatureRenderPhase phase, SubmitNode node){
-        return this.forceAlwaysOnTop ? this.alwaysOnTop : phase;
+        return this.forceAlwaysOnTop ? this.alwaysOnTopGizmos : phase;
     }
 
     @ModifyReceiver(
-        method = "submitNameTag",
+        method = "submitNameTagPart",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/feature/phase/SimpleFeatureRenderPhase;submit(Lnet/minecraft/client/renderer/feature/submit/SubmitNode;)V"
@@ -70,7 +68,7 @@ public class SubmitNodeCollectionMixin implements SubmitNodeCollectorExtension {
         expect = 2
     )
     private SimpleFeatureRenderPhase interceptNameTags(SimpleFeatureRenderPhase phase, SubmitNode node){
-        return this.forceAlwaysOnTop ? this.alwaysOnTop : phase;
+        return this.forceAlwaysOnTop ? this.alwaysOnTopGizmos : phase;
     }
 
     @WrapWithCondition(
@@ -83,7 +81,7 @@ public class SubmitNodeCollectionMixin implements SubmitNodeCollectorExtension {
     private boolean interceptTranslucentNameTags(TranslucentFeatureRenderPhase phase, TranslucentSubmit node){
         if(!this.forceAlwaysOnTop)
             return true;
-        this.alwaysOnTop.submit(node);
+        this.alwaysOnTopGizmos.submit(node);
         return false;
     }
 }
