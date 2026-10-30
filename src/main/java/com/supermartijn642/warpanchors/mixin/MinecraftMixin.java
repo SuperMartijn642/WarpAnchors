@@ -5,6 +5,7 @@ import com.supermartijn642.warpanchors.content.WarpHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.SwingAnimation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +32,7 @@ public class MinecraftMixin {
         if(player.isSpectator())
             return;
         if(WarpHandler.tryTeleport()){
-            player.swing(InteractionHand.MAIN_HAND);
+            player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, false);
             this.missTime = 40;
             cir.setReturnValue(false);
         }

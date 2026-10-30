@@ -59,6 +59,7 @@ public final class WarpHandler {
     private static int targetedAnchorIndex;
     private static WarpAnchorBlock.Color targetedAnchorColor;
     private static String targetedAnchorName = "";
+    public static boolean submittedAlwaysOnTopNodes = false;
 
     public static void add(WarpAnchorBlockEntity anchor){
         WARP_ANCHORS.get(anchor.getColor()).add(anchor);
@@ -201,6 +202,11 @@ public final class WarpHandler {
     }
 
     public static void submitRenderState(SubmitNodeCollector output, CameraRenderState cameraRenderState){
+        if(ANCHOR_RENDER_STATES.isEmpty()){
+            submittedAlwaysOnTopNodes = false;
+            return;
+        }
+        submittedAlwaysOnTopNodes = true;
         if(output instanceof SubmitNodeCollectorExtension extension)
             extension.warpanchors_setAlwaysOnTop(true);
         try{
