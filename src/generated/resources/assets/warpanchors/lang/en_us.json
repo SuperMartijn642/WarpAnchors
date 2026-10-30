@@ -1,0 +1,13 @@
+{
+  "warpanchors.block.warp_anchor": "Warp Anchor",
+  "warpanchors.item_group": "Warp Anchors",
+  "warpanchors.screen.name": "Name",
+  "warpanchors.screen.name.suggestion": "Type",
+  "warpanchors.screen.name.hint": "Name is shown when looking at anchors to warp to",
+  "warpanchors.screen.name_field.narrate": "Text field: Enter name",
+  "warpanchors.screen.color": "Color",
+  "warpanchors.screen.color.hint": "Colored anchors can only warp to colorless anchors and anchors of the same color",
+  "warpanchors.screen.color_button.narrate": "Select color %s",
+  "warpanchors.screen.color.none": "None",
+  "warpanchors.screen.narrate": "Warp Anchor configuration screen"
+}

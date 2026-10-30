@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "color=black": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=blue": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=brown": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=cyan": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=gray": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=green": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=light_blue": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=light_gray": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=lime": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=magenta": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=none": {
+      "model": "warpanchors:block/warp_anchor"
+    },
+    "color=orange": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=pink": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=purple": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=red": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=white": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    },
+    "color=yellow": {
+      "model": "warpanchors:block/warp_anchor_tinted"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": "#c:ingots/iron",
+    "B": "#c:gems/lapis",
+    "C": "#c:ender_pearls"
+  },
+  "result": {
+    "id": "warpanchors:warp_anchor"
+  }
+}

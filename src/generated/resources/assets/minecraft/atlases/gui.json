@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "warpanchors:gui/color"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "warpanchors:gui/background_ender"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "warpanchors:gui/background_frame"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "warpanchors:gui/color_button"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "warpanchors:gui/cross"
+    }
+  ]
+}
