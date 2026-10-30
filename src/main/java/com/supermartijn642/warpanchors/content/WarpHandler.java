@@ -8,7 +8,6 @@ import com.supermartijn642.warpanchors.content.packets.WarpPacket;
 import com.supermartijn642.warpanchors.extension.SubmitNodeCollectorExtension;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.block.BlockTintSource;
@@ -17,6 +16,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -176,12 +176,10 @@ public final class WarpHandler {
             }
             renderPos.set(anchorPos);
             BlockStateModel model = blockModels.get(anchorState);
-            long seed = anchorState.getSeed(anchorPos);
-            RANDOM_SOURCE.setSeed(seed);
-            boolean hasTranslucency = model.hasMaterialFlag(level, anchorPos, anchorState, RANDOM_SOURCE, BakedQuad.FLAG_TRANSLUCENT);
-            QuadEmitter emitter = blockRenderState.setupMesh(IDENTITY_MATRIX, hasTranslucency);
-            RANDOM_SOURCE.setSeed(seed);
-            model.emitQuads(emitter, level, anchorPos, anchorState, RANDOM_SOURCE, _ -> false);
+            boolean hasTranslucency = model.hasMaterialFlag(level, anchorPos, anchorState, BakedQuad.FLAG_TRANSLUCENT);
+            List<BlockStateModelPart> parts = blockRenderState.setupModel(IDENTITY_MATRIX, hasTranslucency);
+            RANDOM_SOURCE.setSeed(anchorState.getSeed(anchorPos));
+            model.collectParts(level, anchorPos, anchorState, RANDOM_SOURCE, parts);
             IntList tintLayers = blockRenderState.tintLayers();
             for(BlockTintSource tintSource : blockColors.getTintSources(anchorState))
                 tintLayers.add(tintSource.colorInWorld(anchorState, level, anchorPos));

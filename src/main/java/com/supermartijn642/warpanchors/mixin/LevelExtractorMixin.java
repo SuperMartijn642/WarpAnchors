@@ -16,7 +16,7 @@ public class LevelExtractorMixin {
         method = "extract",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/extract/LevelExtractor;extractVisibleBlockEntities(Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/state/level/LevelRenderState;)V"
+            target = "Lnet/minecraft/client/renderer/extract/LevelExtractor;extractVisibleBlockEntities(Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/state/level/LevelRenderState;Lnet/minecraft/client/renderer/culling/Frustum;)V"
         )
     )
     private void extract(DeltaTracker deltaTracker, Camera camera, float deltaPartialTick, CallbackInfo ci){
