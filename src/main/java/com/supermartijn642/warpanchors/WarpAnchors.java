@@ -18,12 +18,13 @@ import com.supermartijn642.warpanchors.content.packets.SetNamePacket;
 import com.supermartijn642.warpanchors.content.packets.WarpPacket;
 import com.supermartijn642.warpanchors.content.particle.WarpParticleType;
 import com.supermartijn642.warpanchors.generators.*;
-import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraftforge.fml.common.Mod;
 
-public class WarpAnchors implements ModInitializer {
+@Mod(WarpAnchors.MODID)
+public class WarpAnchors {
 
     public static final String MODID = "warpanchors";
 
@@ -42,15 +43,16 @@ public class WarpAnchors implements ModInitializer {
 
     public static final CreativeItemGroup CREATIVE_GROUP = CreativeItemGroup.create(MODID, () -> warpAnchor.asItem());
 
-    @Override
-    public void onInitialize(){
+    public WarpAnchors(){
         CHANNEL.registerMessage(SetColorPacket.class, SetColorPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(SetNamePacket.class, SetNamePacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(WarpPacket.class, WarpPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
 
         register();
-        if(CommonUtils.getEnvironmentSide().isClient())
+        if(CommonUtils.getEnvironmentSide().isClient()){
+            WarpAnchorsClient.init();
             registerGenerators();
+        }
     }
 
     private static void register(){

@@ -3,7 +3,7 @@ package com.supermartijn642.warpanchors.generators;
 import com.supermartijn642.core.generator.RecipeGenerator;
 import com.supermartijn642.core.generator.ResourceCache;
 import com.supermartijn642.warpanchors.WarpAnchors;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraftforge.common.Tags;
 
 public class WarpAnchorsRecipeGenerator extends RecipeGenerator {
 
@@ -17,9 +17,9 @@ public class WarpAnchorsRecipeGenerator extends RecipeGenerator {
             .pattern("ABA")
             .pattern("BCB")
             .pattern("ABA")
-            .input('A', ConventionalItemTags.IRON_INGOTS)
-            .input('B', ConventionalItemTags.LAPIS_GEMS)
-            .input('C', ConventionalItemTags.ENDER_PEARLS)
-            .unlockedBy(ConventionalItemTags.ENDER_PEARLS);
+            .input('A', Tags.Items.INGOTS_IRON)
+            .input('B', Tags.Items.GEMS_LAPIS)
+            .input('C', Tags.Items.ENDER_PEARLS)
+            .unlockedBy(Tags.Items.ENDER_PEARLS);
     }
 }
