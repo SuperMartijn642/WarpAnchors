@@ -1,20 +1,24 @@
 package com.supermartijn642.warpanchors.content;
 
 import com.mojang.serialization.Codec;
+import com.supermartijn642.core.TextComponents;
 import com.supermartijn642.core.block.BaseBlock;
 import com.supermartijn642.core.block.BlockProperties;
 import com.supermartijn642.core.block.BlockShape;
 import com.supermartijn642.core.block.EntityHoldingBlock;
 import com.supermartijn642.warpanchors.WarpAnchorsClient;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,6 +30,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
@@ -45,6 +50,12 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
         if(level.isClientSide() && level.getBlockEntity(pos) instanceof WarpAnchorBlockEntity anchor)
             WarpAnchorsClient.showAnchorScreen(anchor);
         return InteractionFeedback.SUCCESS;
+    }
+
+    @Override
+    public void appendItemInformation(ItemStack stack, Consumer<Component> info, boolean advanced){
+        super.appendItemInformation(stack, info, advanced);
+        info.accept(TextComponents.translation("warpanchors.warp_anchor.description").color(ChatFormatting.GRAY).get());
     }
 
     @Override
