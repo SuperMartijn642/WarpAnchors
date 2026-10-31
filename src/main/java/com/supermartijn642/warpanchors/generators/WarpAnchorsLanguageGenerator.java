@@ -12,7 +12,11 @@ public class WarpAnchorsLanguageGenerator extends LanguageGenerator {
 
     @Override
     public void generate(){
+        // Block
         this.block(WarpAnchors.warpAnchor, "Warp Anchor");
+        this.translation("warpanchors.warp_anchor.description", "Allows teleporting to nearby anchors when stood on");
+
+        // Creative tab
         this.itemGroup(WarpAnchors.CREATIVE_GROUP, "Warp Anchors");
 
         // Screen
