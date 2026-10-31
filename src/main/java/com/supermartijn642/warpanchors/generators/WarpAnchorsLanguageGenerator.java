@@ -14,6 +14,7 @@ public class WarpAnchorsLanguageGenerator extends LanguageGenerator {
     public void generate(){
         // Block
         this.block(WarpAnchors.warpAnchor, "Warp Anchor");
+        this.translation("warpanchors.warp_anchor.name.colored", "%s Warp Anchor");
         this.translation("warpanchors.warp_anchor.description", "Allows teleporting to nearby anchors when stood on");
 
         // Creative tab
