@@ -45,12 +45,9 @@ public class ColorButton extends AbstractButtonWidget {
 
     @Override
     public Component getNarrationMessage(){
-        Component color = this.color == WarpAnchorBlock.Color.NONE ?
-            TextComponents.translation("warpanchors.screen.color.none").get() :
-            TextComponents.translation("color.minecraft." + this.color.getDyeColor().getName()).get();
         return TextComponents.translation(
             "warpanchors.screen.color_button.narrate",
-            color
+            this.color.getTranslation()
         ).get();
     }
 }
