@@ -1,6 +1,7 @@
 {
   "model": {
-    "model": "warpanchors:block/warp_anchor",
-    "type": "minecraft:model"
+    "colorless_model": "warpanchors:block/warp_anchor",
+    "colored_model": "warpanchors:block/warp_anchor_tinted",
+    "type": "warpanchors:colorable"
   }
 }
