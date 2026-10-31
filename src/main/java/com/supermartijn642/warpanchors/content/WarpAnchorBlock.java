@@ -11,6 +11,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,7 +20,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,6 +39,8 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
     public static int RANGE = 100, RANGE_SQUARED = RANGE * RANGE;
     public static int MAX_NAME_LENGTH = 20;
+
+    public static final DataComponentType<Color> COLOR_DATA_COMPONENT = DataComponentType.<Color>builder().persistent(Color.CODEC).networkSynchronized(Color.STREAM_CODEC).build();
 
     private static final BlockShape OCCLUSION_SHAPE = BlockShape.createBlockShape(1, 1, 1, 15, 15, 15);
     public static final EnumProperty<Color> COLOR = EnumProperty.create("color", Color.class);
@@ -56,6 +61,21 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
     public void appendItemInformation(ItemStack stack, Consumer<Component> info, boolean advanced){
         super.appendItemInformation(stack, info, advanced);
         info.accept(TextComponents.translation("warpanchors.warp_anchor.description").color(ChatFormatting.GRAY).get());
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context){
+        Color color = context.getItemInHand().get(COLOR_DATA_COMPONENT);
+        if(color != null)
+            return this.defaultBlockState().setValue(COLOR, color);
+        return this.defaultBlockState();
+    }
+
+    @Override
+    protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData){
+        ItemStack stack = new ItemStack(this);
+        stack.set(COLOR_DATA_COMPONENT, state.getValue(COLOR));
+        return stack;
     }
 
     @Override
@@ -109,6 +129,12 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
         public int getTint(){
             return this.dyeColor == null ? -1 : this.dyeColor.getTextureDiffuseColor();
+        }
+
+        public Component getTranslation(){
+            return this == WarpAnchorBlock.Color.NONE ?
+                TextComponents.translation("warpanchors.screen.color.none").get() :
+                TextComponents.translation("color.minecraft." + this.dyeColor.getName()).get();
         }
 
         @Override
