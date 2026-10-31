@@ -1,5 +1,7 @@
 {
   "warpanchors.block.warp_anchor": "Warp Anchor",
+  "warpanchors.warp_anchor.name.colored": "%s Warp Anchor",
+  "warpanchors.warp_anchor.description": "Allows teleporting to nearby anchors when stood on",
   "warpanchors.item_group": "Warp Anchors",
   "warpanchors.screen.name": "Name",
   "warpanchors.screen.name.suggestion": "Type",
