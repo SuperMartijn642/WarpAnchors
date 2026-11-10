@@ -45,7 +45,7 @@ public class WarpPacket implements BasePacket {
         if(this.target.distSqr(this.from) > WarpAnchorBlock.RANGE_SQUARED + 0.1)
             return;
         Level level = player.level();
-        if(!level.getWorldBorder().isWithinBounds(this.target))
+        if(!level.getWorldBorder().isWithinBounds(this.target) || !level.hasChunkAt(this.target))
             return;
         if(!(level.getBlockEntity(this.from) instanceof WarpAnchorBlockEntity fromAnchor)
             || !(level.getBlockEntity(this.target) instanceof WarpAnchorBlockEntity targetAnchor))
