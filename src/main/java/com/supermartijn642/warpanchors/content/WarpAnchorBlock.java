@@ -114,7 +114,7 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
         public static final Color[] VALUES = values();
         public static final Codec<Color> CODEC = StringRepresentable.fromEnum(Color::values);
-        public static final StreamCodec<ByteBuf,Color> STREAM_CODEC = ByteBufCodecs.idMapper(i -> VALUES[Math.clamp(i, 0, VALUES.length)], Enum::ordinal);
+        public static final StreamCodec<ByteBuf,Color> STREAM_CODEC = ByteBufCodecs.idMapper(i -> VALUES[Math.clamp(i, 0, VALUES.length - 1)], Enum::ordinal);
 
         private final String name = this.name().toLowerCase(Locale.ROOT);
         private final @Nullable DyeColor dyeColor;
