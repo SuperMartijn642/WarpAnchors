@@ -131,8 +131,10 @@ public final class WarpHandler {
 
     public static boolean extractRenderState(Camera camera){
         int anchors = extractAnchors(camera);
-        for(int i = ANCHOR_RENDER_STATES.size() - anchors; i > 0; i--)
+        for(int i = ANCHOR_RENDER_STATES.size() - anchors; i > 0; i--){
             ANCHOR_RENDER_STATES.removeLast();
+            ANCHOR_POSITIONS.removeLast();
+        }
         return anchors > 0;
     }
 
