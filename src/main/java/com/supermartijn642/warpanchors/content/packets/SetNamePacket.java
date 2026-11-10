@@ -6,6 +6,7 @@ import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringUtil;
 
 public class SetNamePacket implements BasePacket {
@@ -42,6 +43,8 @@ public class SetNamePacket implements BasePacket {
     @Override
     public void handle(PacketContext context){
         if(this.pos.distToCenterSqr(context.getPlayer().position()) > 32 * 32)
+            return;
+        if(!context.getPlayer().getAbilities().mayBuild || !context.getPlayer().mayInteract((ServerLevel)context.getWorld(), this.pos))
             return;
         if(!(context.getWorld().getBlockEntity(this.pos) instanceof WarpAnchorBlockEntity anchor))
             return;
