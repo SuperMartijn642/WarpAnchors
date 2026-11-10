@@ -43,7 +43,8 @@ public final class WarpHandler {
 
     static{
         for(WarpAnchorBlock.Color color : WarpAnchorBlock.Color.VALUES)
-            WARP_ANCHORS.put(color, new ReferenceOpenHashSet<>());
+            // Weak references as it seems not all block entities are removed when leaving a level
+            WARP_ANCHORS.put(color, Collections.newSetFromMap(new WeakHashMap<>()));
         COLORLESS_WARP_ANCHORS = WARP_ANCHORS.get(WarpAnchorBlock.Color.NONE);
     }
 
