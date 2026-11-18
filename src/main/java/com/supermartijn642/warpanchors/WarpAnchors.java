@@ -14,9 +14,7 @@ import com.supermartijn642.core.registry.RegistrationHandler;
 import com.supermartijn642.core.registry.RegistryEntryAcceptor;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlockEntity;
-import com.supermartijn642.warpanchors.content.packets.SetColorPacket;
-import com.supermartijn642.warpanchors.content.packets.SetNamePacket;
-import com.supermartijn642.warpanchors.content.packets.WarpPacket;
+import com.supermartijn642.warpanchors.content.packets.*;
 import com.supermartijn642.warpanchors.content.particle.WarpParticleType;
 import com.supermartijn642.warpanchors.generators.*;
 import net.minecraft.network.chat.Component;
@@ -55,6 +53,8 @@ public class WarpAnchors {
     });
 
     public WarpAnchors(){
+        CHANNEL.registerMessage(OpenScreenPacket.class, OpenScreenPacket::new, PacketDirection.SERVER_TO_CLIENT, true);
+        CHANNEL.registerMessage(RequestScreenPacket.class, RequestScreenPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(SetColorPacket.class, SetColorPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(SetNamePacket.class, SetNamePacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(WarpPacket.class, WarpPacket::new, PacketDirection.CLIENT_TO_SERVER, true);

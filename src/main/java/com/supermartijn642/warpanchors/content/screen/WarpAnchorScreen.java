@@ -18,18 +18,24 @@ public class WarpAnchorScreen extends BaseWidget {
     public static final Identifier BACKGROUND_ENDER = WarpAnchors.identifier("gui/background_ender");
 
     private final WarpAnchorBlockEntity anchor;
+    private final boolean editable;
 
-    public WarpAnchorScreen(WarpAnchorBlockEntity anchor){
+    public WarpAnchorScreen(WarpAnchorBlockEntity anchor, boolean editable){
         super(0, 0, 176, 143);
         this.anchor = anchor;
+        this.editable = editable;
     }
 
     @Override
     protected void addWidgets(){
-        this.addWidget(new AnchorNameField(15, 23, 146, 18, WarpAnchorBlock.MAX_NAME_LENGTH, this.anchor));
+        AnchorNameField nameField = this.addWidget(new AnchorNameField(15, 23, 146, 18, WarpAnchorBlock.MAX_NAME_LENGTH, this.anchor));
+        nameField.setActive(this.editable);
+        if(!this.editable)
+            nameField.setSuggestion(null);
         int index = 0;
         for(WarpAnchorBlock.Color color : WarpAnchorBlock.Color.VALUES){
-            this.addWidget(new ColorButton(15 + index % 7 * 21, 66 + index / 7 * 21, this.anchor, color));
+            ColorButton button = this.addWidget(new ColorButton(15 + index % 7 * 21, 66 + index / 7 * 21, this.anchor, color));
+            button.setActive(this.editable);
             index++;
         }
     }

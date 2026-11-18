@@ -9,6 +9,7 @@ import com.supermartijn642.warpanchors.content.WarpAnchorItemModel;
 import com.supermartijn642.warpanchors.content.particle.WarpParticleProvider;
 import com.supermartijn642.warpanchors.content.screen.WarpAnchorScreen;
 import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.core.BlockPos;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -38,7 +39,8 @@ public class WarpAnchorsClient {
         });
     }
 
-    public static void showAnchorScreen(WarpAnchorBlockEntity anchor){
-        ClientUtils.displayScreen(WidgetScreen.of(new WarpAnchorScreen(anchor)));
+    public static void showAnchorScreen(BlockPos pos, boolean editable){
+        if(ClientUtils.getWorld().getBlockEntity(pos) instanceof WarpAnchorBlockEntity anchor)
+            ClientUtils.displayScreen(WidgetScreen.of(new WarpAnchorScreen(anchor, editable)));
     }
 }
