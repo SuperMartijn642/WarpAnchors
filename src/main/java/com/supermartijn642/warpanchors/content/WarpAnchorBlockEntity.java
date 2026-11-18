@@ -1,9 +1,11 @@
 package com.supermartijn642.warpanchors.content;
 
+import com.supermartijn642.core.TextComponents;
 import com.supermartijn642.core.block.BaseBlockEntity;
 import com.supermartijn642.core.util.teleport.TeleportTarget;
 import com.supermartijn642.core.util.teleport.Teleporter;
 import com.supermartijn642.warpanchors.WarpAnchors;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -43,8 +45,10 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
     public void warp(Player player, WarpAnchorBlockEntity from){
         // Don't warp the player into blocks above the anchor
         Vec3 offset = new Vec3(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1.1, this.worldPosition.getZ() + 0.5).subtract(player.position());
-        if(!this.level.noCollision(player, player.getBoundingBox().move(offset)))
+        if(!this.level.noCollision(player, player.getBoundingBox().move(offset))){
+            player.sendOverlayMessage(TextComponents.translation("warpanchors.warp.obstructed").color(ChatFormatting.RED).get());
             return;
+        }
         BlockPos oldPos = player.blockPosition();
         float oldPlayerWidth = player.getBbWidth() + 0.4f, oldPlayerHeight = player.getBbHeight() + 0.2f;
         Vec3 oldPlayerCenter = player.getBoundingBox().getCenter();
