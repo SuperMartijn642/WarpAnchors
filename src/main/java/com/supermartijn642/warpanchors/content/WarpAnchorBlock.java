@@ -6,7 +6,8 @@ import com.supermartijn642.core.block.BaseBlock;
 import com.supermartijn642.core.block.BlockProperties;
 import com.supermartijn642.core.block.BlockShape;
 import com.supermartijn642.core.block.EntityHoldingBlock;
-import com.supermartijn642.warpanchors.WarpAnchorsClient;
+import com.supermartijn642.warpanchors.WarpAnchors;
+import com.supermartijn642.warpanchors.content.packets.RequestScreenPacket;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -52,8 +53,8 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
     @Override
     protected InteractionFeedback interact(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, Direction hitSide, Vec3 hitLocation){
-        if(level.isClientSide() && level.getBlockEntity(pos) instanceof WarpAnchorBlockEntity anchor)
-            WarpAnchorsClient.showAnchorScreen(anchor);
+        if(level.isClientSide())
+            WarpAnchors.CHANNEL.sendToServer(new RequestScreenPacket(pos));
         return InteractionFeedback.SUCCESS;
     }
 
