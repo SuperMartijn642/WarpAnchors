@@ -36,7 +36,7 @@ public class ColorButton extends AbstractButtonWidget {
     @Override
     public void renderBackground(WidgetRenderContext context, GuiGraphicsHelper graphics, int mouseX, int mouseY){
         super.renderBackground(context, graphics, mouseX, mouseY);
-        graphics.submitSprite(BACKGROUND, this.x, this.y, this.width, this.height, p -> p.uv(0, (this.anchor.getColor() == this.color ? 2 : this.isFocused() ? 1 : 0) / 3f, 1, 1 / 3f));
+        graphics.submitSprite(BACKGROUND, this.x, this.y, this.width, this.height, p -> p.uv(0, (this.anchor.getColor() == this.color ? 2 : this.isFocused() && this.isActive() ? 1 : 0) / 3f, 1, 1 / 3f));
         if(this.color == WarpAnchorBlock.Color.NONE)
             graphics.submitSprite(CROSS, this.x + 3, this.y + 3, this.width - 6, this.height - 6);
         else
