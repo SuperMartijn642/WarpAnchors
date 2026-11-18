@@ -30,5 +30,8 @@ public class WarpAnchorsLanguageGenerator extends LanguageGenerator {
         this.translation("warpanchors.screen.color_button.narrate", "Select color %s");
         this.translation("warpanchors.screen.color.none", "None");
         this.translation("warpanchors.screen.narrate", "Warp Anchor configuration screen");
+
+        // Warping
+        this.translation("warpanchors.warp.obstructed", "Space above anchor is obstructed");
     }
 }
