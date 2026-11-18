@@ -12,6 +12,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.minecraft.client.color.item.ItemTintSources;
+import net.minecraft.core.BlockPos;
 
 import java.util.List;
 
@@ -29,7 +30,8 @@ public class WarpAnchorsClient implements ClientModInitializer {
         ParticleProviderRegistry.getInstance().register(WarpAnchors.warpParticle, WarpParticleProvider::new);
     }
 
-    public static void showAnchorScreen(WarpAnchorBlockEntity anchor){
-        ClientUtils.displayScreen(WidgetScreen.of(new WarpAnchorScreen(anchor)));
+    public static void showAnchorScreen(BlockPos pos, boolean editable){
+        if(ClientUtils.getWorld().getBlockEntity(pos) instanceof WarpAnchorBlockEntity anchor)
+            ClientUtils.displayScreen(WidgetScreen.of(new WarpAnchorScreen(anchor, editable)));
     }
 }
