@@ -187,6 +187,7 @@ public final class WarpHandler {
             RANDOM_SOURCE.setSeed(seed);
             model.emitQuads(emitter, level, anchorPos, anchorState, RANDOM_SOURCE, _ -> false);
             IntList tintLayers = blockRenderState.tintLayers();
+            tintLayers.clear();
             for(BlockTintSource tintSource : blockColors.getTintSources(anchorState))
                 tintLayers.add(tintSource.colorInWorld(anchorState, level, anchorPos));
 
