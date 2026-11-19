@@ -4,6 +4,7 @@ import com.supermartijn642.core.network.BasePacket;
 import com.supermartijn642.core.network.PacketContext;
 import com.supermartijn642.core.util.teleport.TeleportTarget;
 import com.supermartijn642.core.util.teleport.Teleporter;
+import com.supermartijn642.warpanchors.WarpAnchorsConfig;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -42,7 +43,8 @@ public class WarpPacket implements BasePacket {
         Player player = context.getPlayer();
         if(this.from.distSqr(player.getOnPos()) > 16)
             return;
-        if(this.target.distSqr(this.from) > WarpAnchorBlock.RANGE_SQUARED + 0.1)
+        int range = WarpAnchorsConfig.anchorRange.get();
+        if(this.target.distSqr(this.from) > range * range + 0.1)
             return;
         Level level = player.level();
         if(!level.getWorldBorder().isWithinBounds(this.target) || !level.hasChunkAt(this.target))
