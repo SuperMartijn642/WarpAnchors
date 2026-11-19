@@ -87,7 +87,6 @@ public class WarpAnchors {
         GeneratorRegistrationHandler handler = GeneratorRegistrationHandler.get(MODID);
         handler.addGenerator(WarpAnchorsAtlasSourceGenerator::new);
         handler.addGenerator(WarpAnchorsBlockStateGenerator::new);
-        handler.addGenerator(WarpAnchorsItemInfoGenerator::new);
         handler.addGenerator(WarpAnchorsLanguageGenerator::new);
         handler.addGenerator(WarpAnchorsLootTableGenerator::new);
         handler.addGenerator(WarpAnchorsRecipeGenerator::new);
