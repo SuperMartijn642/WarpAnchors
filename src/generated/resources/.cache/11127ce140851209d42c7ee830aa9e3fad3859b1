@@ -1,7 +1,6 @@
-// 1.21.4	2026-11-19T17:06:27.6714389	Core Lib Generators
+// 1.21.3	2026-11-19T17:32:41.4319671	Core Lib Generators
 02bc0cee86abf13e4270b9515ac6f80ed176e293 assets/minecraft/atlases/gui.json
 257e6b3bb3fe20e4361f2e70def73ea7610288ba assets/warpanchors/blockstates/warp_anchor.json
-125d3e4f114f0888d74278c825e4e313d8fbfbf9 assets/warpanchors/items/warp_anchor.json
 a94e36ee8d583b6a893e74ae22c717e0b8c345bb assets/warpanchors/lang/en_us.json
 fc451ffba7f727f54961b80ad7fbb48872dc063b data/minecraft/tags/block/mineable/pickaxe.json
 57f61de1ba6079c2eae1d727dc04fff1cf4c25d0 data/warpanchors/advancement/recipes/misc/warp_anchor.json

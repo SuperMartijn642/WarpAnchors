@@ -64,8 +64,6 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
         Vec3 playerCenter = player.getBoundingBox().getCenter();
         ((ServerLevel)this.level).sendParticles(
             WarpAnchors.warpParticle.create(this.getColor()),
-            true,
-            false,
             playerCenter.x, playerCenter.y, playerCenter.z,
             50,
             playerWidth / 2, playerHeight / 2, playerWidth / 2,
@@ -73,8 +71,6 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
         );
         ((ServerLevel)from.level).sendParticles(
             WarpAnchors.warpParticle.create(from.getColor()),
-            true,
-            false,
             oldPlayerCenter.x, oldPlayerCenter.y, oldPlayerCenter.z,
             50,
             oldPlayerWidth / 2, oldPlayerHeight / 2, oldPlayerWidth / 2,

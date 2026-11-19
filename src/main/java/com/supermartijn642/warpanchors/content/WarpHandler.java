@@ -208,7 +208,7 @@ public final class WarpHandler {
         POSE_STACK.translate(renderPos.x, renderPos.y, renderPos.z);
         POSE_STACK.scale(1.1f, 1.1f, 1.1f);
         POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-        minecraft.getBlockRenderer().getModelRenderer().renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), state, minecraft.getBlockRenderer().getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        minecraft.getBlockRenderer().getModelRenderer().renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), state, minecraft.getBlockRenderer().getBlockModel(state), ARGB.red(tint) / 255f, ARGB.green(tint) / 255f, ARGB.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         POSE_STACK.popPose();
     }
 
@@ -234,7 +234,7 @@ public final class WarpHandler {
             POSE_STACK.translate(dummyVector.x, dummyVector.y, dummyVector.z);
             POSE_STACK.scale(1.1f, 1.1f, 1.1f);
             POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-            blockRenderer.getModelRenderer().renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), state, blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.getModelRenderer().renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), state, blockRenderer.getBlockModel(state), ARGB.red(tint) / 255f, ARGB.green(tint) / 255f, ARGB.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             POSE_STACK.popPose();
             // Name
             if(isTargeted && !targetedAnchorName.isEmpty()){

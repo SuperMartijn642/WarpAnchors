@@ -1,0 +1,11 @@
+{
+  "parent": "warpanchors:block/warp_anchor",
+  "overrides": [
+    {
+      "predicate": {
+        "warpanchors:colored": 1
+      },
+      "model": "warpanchors:block/warp_anchor_tinted"
+    }
+  ]
+}
