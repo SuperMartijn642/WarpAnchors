@@ -8,7 +8,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ARGB;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.joml.Math;
@@ -32,9 +32,9 @@ public class WarpParticle extends TextureSheetParticle {
         this.size = MIN_SIZE + (MAX_SIZE - MIN_SIZE) * random.nextFloat();
         if(color == WarpAnchorBlock.Color.NONE)
             color = WarpAnchorBlock.Color.LIGHT_BLUE;
-        this.rCol = ARGB.red(color.getTint()) / 255f;
-        this.gCol = ARGB.green(color.getTint()) / 255f;
-        this.bCol = ARGB.blue(color.getTint()) / 255f;
+        this.rCol = FastColor.ARGB32.red(color.getTint()) / 255f;
+        this.gCol = FastColor.ARGB32.green(color.getTint()) / 255f;
+        this.bCol = FastColor.ARGB32.blue(color.getTint()) / 255f;
     }
 
     @Override

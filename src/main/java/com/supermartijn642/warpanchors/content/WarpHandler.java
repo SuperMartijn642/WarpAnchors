@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.ARGB;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -191,14 +191,18 @@ public final class WarpHandler {
         return rendered;
     }
 
+    public static boolean hasTargetedAnchor(){
+        return targetedAnchorIndex >= 0;
+    }
+
     public static void renderOutline(Vec3 cameraPos){
-        if(targetedAnchorIndex < 0)
+        if(!hasTargetedAnchor())
             return;
 
         Minecraft minecraft = ClientUtils.getMinecraft();
         OutlineBufferSource outlineBufferSource = minecraft.renderBuffers().outlineBufferSource();
         int color = targetedAnchorColor.getTint();
-        outlineBufferSource.setColor(ARGB.red(color), ARGB.green(color), ARGB.blue(color), 255);
+        outlineBufferSource.setColor(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color), 255);
         BlockState state = ANCHOR_STATES.get(targetedAnchorIndex);
         int tint = ANCHOR_TINTS.getInt(targetedAnchorIndex);
         Vector3f renderPos = new Vector3f();
@@ -208,7 +212,7 @@ public final class WarpHandler {
         POSE_STACK.translate(renderPos.x, renderPos.y, renderPos.z);
         POSE_STACK.scale(1.1f, 1.1f, 1.1f);
         POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-        minecraft.getBlockRenderer().getModelRenderer().renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), state, minecraft.getBlockRenderer().getBlockModel(state), ARGB.red(tint) / 255f, ARGB.green(tint) / 255f, ARGB.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        minecraft.getBlockRenderer().getModelRenderer().renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), state, minecraft.getBlockRenderer().getBlockModel(state), FastColor.ARGB32.red(tint) / 255f, FastColor.ARGB32.green(tint) / 255f, FastColor.ARGB32.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         POSE_STACK.popPose();
     }
 
@@ -217,7 +221,7 @@ public final class WarpHandler {
             return;
 
         Minecraft minecraft = ClientUtils.getMinecraft();
-        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
         BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
         POSE_STACK.pushPose();
@@ -234,7 +238,7 @@ public final class WarpHandler {
             POSE_STACK.translate(dummyVector.x, dummyVector.y, dummyVector.z);
             POSE_STACK.scale(1.1f, 1.1f, 1.1f);
             POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-            blockRenderer.getModelRenderer().renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), state, blockRenderer.getBlockModel(state), ARGB.red(tint) / 255f, ARGB.green(tint) / 255f, ARGB.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.getModelRenderer().renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state, false)), state, blockRenderer.getBlockModel(state), FastColor.ARGB32.red(tint) / 255f, FastColor.ARGB32.green(tint) / 255f, FastColor.ARGB32.blue(tint) / 255f, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             POSE_STACK.popPose();
             // Name
             if(isTargeted && !targetedAnchorName.isEmpty()){
