@@ -1,6 +1,7 @@
 package com.supermartijn642.warpanchors.content;
 
 import com.google.common.collect.Iterables;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.supermartijn642.core.ClientUtils;
 import com.supermartijn642.warpanchors.WarpAnchors;
@@ -10,14 +11,16 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.SubmitNodeStorage;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.OutlineBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -26,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -47,7 +51,6 @@ public final class WarpHandler {
      * If an anchor is further than this threshold, it will be rendered as if at the threshold distance.
      */
     private static final float ENLARGE_THRESHOLD = 20, ENLARGE_NAME_THRESHOLD = 5;
-    public static FeatureRenderDispatcher FEATURE_RENDER_DISPATCHER;
     private static final List<BlockState> ANCHOR_STATES = new ArrayList<>();
     private static final IntList ANCHOR_TINTS = new IntArrayList();
     private static final List<BlockPos.MutableBlockPos> ANCHOR_POSITIONS = new ArrayList<>();
@@ -56,7 +59,6 @@ public final class WarpHandler {
     private static int targetedAnchorIndex;
     private static WarpAnchorBlock.Color targetedAnchorColor;
     private static String targetedAnchorName = "";
-    public static boolean submittedAlwaysOnTopNodes = false;
 
     public static void add(WarpAnchorBlockEntity anchor){
         WARP_ANCHORS.get(anchor.getColor()).add(anchor);
@@ -134,6 +136,7 @@ public final class WarpHandler {
     }
 
     private static int extractAnchors(Camera camera){
+        targetedAnchorIndex = -1;
         WarpAnchorBlockEntity centerAnchor = getStandingOnAnchor();
         if(centerAnchor == null)
             return 0;
@@ -151,7 +154,6 @@ public final class WarpHandler {
         else
             anchors = Iterables.concat(COLORLESS_WARP_ANCHORS, WARP_ANCHORS.get(centerAnchor.getColor()));
 
-        targetedAnchorIndex = -1;
         int rendered = 0;
         float targetedAnchorAngle = (float)Math.PI;
         Level level = ClientUtils.getWorld();
@@ -189,30 +191,35 @@ public final class WarpHandler {
         return rendered;
     }
 
-    public static void submitRenderState(CameraRenderState cameraRenderState){
-        Minecraft minecraft = ClientUtils.getMinecraft();
-        if(FEATURE_RENDER_DISPATCHER == null){
-            RenderBuffers renderBuffers = minecraft.renderBuffers();
-            FEATURE_RENDER_DISPATCHER = new FeatureRenderDispatcher(
-                new SubmitNodeStorage(),
-                minecraft.getBlockRenderer(),
-                renderBuffers.bufferSource(),
-                minecraft.getAtlasManager(),
-                renderBuffers.outlineBufferSource(),
-                renderBuffers.crumblingBufferSource(),
-                minecraft.font
-            );
-        }
-        SubmitNodeStorage output = FEATURE_RENDER_DISPATCHER.getSubmitNodeStorage();
-
-        if(ANCHOR_STATES.isEmpty()){
-            submittedAlwaysOnTopNodes = false;
+    public static void renderOutline(Vec3 cameraPos){
+        if(targetedAnchorIndex < 0)
             return;
-        }
-        submittedAlwaysOnTopNodes = true;
 
+        Minecraft minecraft = ClientUtils.getMinecraft();
+        OutlineBufferSource outlineBufferSource = minecraft.renderBuffers().outlineBufferSource();
+        int color = targetedAnchorColor.getTint();
+        outlineBufferSource.setColor(ARGB.red(color), ARGB.green(color), ARGB.blue(color), 255);
+        BlockState state = ANCHOR_STATES.get(targetedAnchorIndex);
+        int tint = ANCHOR_TINTS.getInt(targetedAnchorIndex);
+        Vector3f renderPos = new Vector3f();
+        getRenderPosition(ANCHOR_POSITIONS.get(targetedAnchorIndex), cameraPos, renderPos);
+        POSE_STACK.pushPose();
+        POSE_STACK.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        POSE_STACK.translate(renderPos.x, renderPos.y, renderPos.z);
+        POSE_STACK.scale(1.1f, 1.1f, 1.1f);
+        POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
+        ModelBlockRenderer.renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), minecraft.getBlockRenderer().getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        POSE_STACK.popPose();
+    }
+
+    public static void renderAlwaysOnTop(Vec3 cameraPos){
+        if(ANCHOR_STATES.isEmpty())
+            return;
+
+        Minecraft minecraft = ClientUtils.getMinecraft();
+        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(minecraft.getMainRenderTarget().getDepthTexture(), 1.0);
+        MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
         BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
-        Vec3 cameraPos = cameraRenderState.pos;
         POSE_STACK.pushPose();
         POSE_STACK.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         Vector3f dummyVector = new Vector3f();
@@ -220,19 +227,14 @@ public final class WarpHandler {
             boolean isTargeted = targetedAnchorIndex == i;
             // Block
             BlockPos.MutableBlockPos pos = ANCHOR_POSITIONS.get(i);
-            dummyVector.set(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-            float distance = dummyVector.distance((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
-            if(distance > ENLARGE_THRESHOLD)
-                dummyVector.sub((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z)
-                    .mul(ENLARGE_THRESHOLD / distance)
-                    .add((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
+            float distance = getRenderPosition(pos, cameraPos, dummyVector);
             BlockState state = ANCHOR_STATES.get(i);
             int tint = ANCHOR_TINTS.getInt(i);
             POSE_STACK.pushPose();
             POSE_STACK.translate(dummyVector.x, dummyVector.y, dummyVector.z);
             POSE_STACK.scale(1.1f, 1.1f, 1.1f);
             POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-            output.submitBlockModel(POSE_STACK, ItemBlockRenderTypes.getRenderType(state), blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, isTargeted ? targetedAnchorColor.getTint() : 0);
+            ModelBlockRenderer.renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             POSE_STACK.popPose();
             // Name
             if(isTargeted && !targetedAnchorName.isEmpty()){
@@ -247,9 +249,34 @@ public final class WarpHandler {
                     CAMERA_FORWARD.mulAdd(-distanceScale * 1 + 0.4f, dummyVector, dummyVector);
                 }else
                     dummyVector.add(CAMERA_UP);
-                output.submitNameTag(POSE_STACK, new Vec3(dummyVector.sub(0, 0.5f, 0)), 0, Component.literal(targetedAnchorName), true, LightTexture.FULL_BRIGHT, dummyVector.distanceSquared((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z), cameraRenderState);
+                renderNameTag(Component.literal(targetedAnchorName), dummyVector, bufferSource);
             }
         }
+        POSE_STACK.popPose();
+        bufferSource.endBatch();
+    }
+
+    private static float getRenderPosition(BlockPos pos, Vec3 cameraPos, Vector3f output){
+        output.set(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+        float distance = output.distance((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
+        if(distance > ENLARGE_THRESHOLD)
+            output.sub((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z)
+                .mul(ENLARGE_THRESHOLD / distance)
+                .add((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
+        return distance;
+    }
+
+    private static void renderNameTag(Component name, Vector3f position, MultiBufferSource bufferSource){
+        Minecraft minecraft = ClientUtils.getMinecraft();
+        POSE_STACK.pushPose();
+        POSE_STACK.translate(position.x, position.y, position.z);
+        POSE_STACK.mulPose(minecraft.gameRenderer.getMainCamera().rotation());
+        POSE_STACK.scale(0.025f, -0.025f, 0.025f);
+        Matrix4f matrix = POSE_STACK.last().pose();
+        float x = -minecraft.font.width(name) / 2f;
+        int backgroundColor = (int)(minecraft.options.getBackgroundOpacity(0.25f) * 255) << 24;
+        minecraft.font.drawInBatch(name, x, 0, -2130706433, false, matrix, bufferSource, Font.DisplayMode.SEE_THROUGH, backgroundColor, LightTexture.FULL_BRIGHT);
+        minecraft.font.drawInBatch(name, x, 0, -1, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
         POSE_STACK.popPose();
     }
 }

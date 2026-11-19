@@ -1,17 +1,18 @@
 package com.supermartijn642.warpanchors.content.particle;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import org.joml.Math;
 
-public class WarpParticle extends SingleQuadParticle {
+public class WarpParticle extends TextureSheetParticle {
 
     private static final int MIN_WARMUP = 5, MAX_WARMUP = 10;
     private static final int MIN_DEGRADE = 10, MAX_DEGRADE = 30;
@@ -21,7 +22,8 @@ public class WarpParticle extends SingleQuadParticle {
     private final float size;
 
     WarpParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite, WarpAnchorBlock.Color color, RandomSource random){
-        super(level, x, y, z, sprite);
+        super(level, x, y, z);
+        this.setSprite(sprite);
         this.hasPhysics = false;
         this.warmupTime = random.nextIntBetweenInclusive(MIN_WARMUP, MAX_WARMUP);
         this.degradeTime = random.nextIntBetweenInclusive(MIN_DEGRADE, MAX_DEGRADE);
@@ -47,13 +49,13 @@ public class WarpParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void extract(QuadParticleRenderState particleTypeRenderState, Camera camera, float partialTickTime){
+    public void render(VertexConsumer buffer, Camera camera, float partialTickTime){
         float age = (this.age + partialTickTime);
         if(age >= this.warmupTime)
             this.quadSize = Math.cos((age - this.warmupTime) / this.degradeTime * Math.PI_OVER_2_f) * this.size;
         else
             this.quadSize = Math.sin(age / this.warmupTime * Math.PI_OVER_2_f) * this.size;
-        super.extract(particleTypeRenderState, camera, partialTickTime);
+        super.render(buffer, camera, partialTickTime);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class WarpParticle extends SingleQuadParticle {
     }
 
     @Override
-    protected Layer getLayer(){
-        return Layer.OPAQUE;
+    public ParticleRenderType getRenderType(){
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 }
