@@ -97,8 +97,8 @@ public final class WarpHandler {
         float targetedAnchorAngle = (float)Math.PI;
         Level level = ClientUtils.getWorld();
         Camera camera = ClientUtils.getMinecraft().gameRenderer.getMainCamera();
-        Vector3fc cameraPosition = camera.position().toVector3f();
-        Vector3fc lookDirection = camera.forwardVector();
+        Vector3fc cameraPosition = camera.getPosition().toVector3f();
+        Vector3fc lookDirection = camera.getLookVector();
         Vector3f dummyVector = new Vector3f();
         for(WarpAnchorBlockEntity anchor : anchors){
             if(anchor == centerAnchor || anchor.getLevel() != level)
@@ -139,10 +139,10 @@ public final class WarpHandler {
             return 0;
         BlockPos centerPos = centerAnchor.getBlockPos();
 
-        CAMERA_FORWARD.set(camera.forwardVector());
-        CAMERA_UP.set(camera.upVector());
-        Vector3fc cameraPosition = camera.position().toVector3f();
-        Vector3fc lookDirection = camera.forwardVector();
+        CAMERA_FORWARD.set(camera.getLookVector());
+        CAMERA_UP.set(camera.getUpVector());
+        Vector3fc cameraPosition = camera.getPosition().toVector3f();
+        Vector3fc lookDirection = camera.getLookVector();
 
         Iterable<WarpAnchorBlockEntity> anchors;
         if(centerAnchor.getColor() == WarpAnchorBlock.Color.NONE)
