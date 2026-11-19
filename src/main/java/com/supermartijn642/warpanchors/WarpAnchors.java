@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(WarpAnchors.MODID)
 public class WarpAnchors {
@@ -51,7 +52,7 @@ public class WarpAnchors {
         }
     });
 
-    public WarpAnchors(){
+    public WarpAnchors(FMLJavaModLoadingContext context){
         CHANNEL.registerMessage(OpenScreenPacket.class, OpenScreenPacket::new, PacketDirection.SERVER_TO_CLIENT, true);
         CHANNEL.registerMessage(RequestScreenPacket.class, RequestScreenPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
         CHANNEL.registerMessage(SetColorPacket.class, SetColorPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
@@ -60,7 +61,7 @@ public class WarpAnchors {
 
         register();
         if(CommonUtils.getEnvironmentSide().isClient()){
-            WarpAnchorsClient.init();
+            WarpAnchorsClient.init(context);
             registerGenerators();
         }
     }

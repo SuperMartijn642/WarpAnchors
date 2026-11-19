@@ -12,20 +12,21 @@ import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 public class WarpAnchorsClient {
 
-    public static void init(){
+    public static void init(FMLJavaModLoadingContext context){
         ClientRegistrationHandler handler = ClientRegistrationHandler.get(WarpAnchors.MODID);
         handler.registerItemModelType("colorable", WarpAnchorItemModel.CODEC);
-        RegisterColorHandlersEvent.Block.BUS.addListener(e -> {
+        RegisterColorHandlersEvent.Block.getBus(context.getModBusGroup()).addListener(e -> {
             e.register(
                 (state, level, pos, tintIndex) -> state.getValue(WarpAnchorBlock.COLOR).getTint(),
                 WarpAnchors.warpAnchor
             );
         });
         ItemTintSources.ID_MAPPER.put(WarpAnchors.identifier("color"), WarpAnchorItemModel.TINT_CODEC);
-        RegisterParticleProvidersEvent.BUS.addListener(e -> {
+        RegisterParticleProvidersEvent.getBus(context.getModBusGroup()).addListener(e -> {
             e.registerSpriteSet(WarpAnchors.warpParticle, WarpParticleProvider::new);
         });
     }
