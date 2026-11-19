@@ -6,9 +6,15 @@
     "ABA"
   ],
   "key": {
-    "A": "#c:ingots/iron",
-    "B": "#c:gems/lapis",
-    "C": "#c:ender_pearls"
+    "A": {
+      "tag": "c:ingots/iron"
+    },
+    "B": {
+      "tag": "c:gems/lapis"
+    },
+    "C": {
+      "tag": "c:ender_pearls"
+    }
   },
   "result": {
     "id": "warpanchors:warp_anchor"

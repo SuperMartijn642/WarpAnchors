@@ -50,8 +50,8 @@ public class WarpAnchorScreen extends BaseWidget {
 
     @Override
     public void renderBackground(WidgetRenderContext context, int mouseX, int mouseY){
-        ScreenUtils.drawGuiSprite(BACKGROUND_ENDER, context.poseStack(), this.x, this.y, this.width, this.height);
-        ScreenUtils.drawGuiSprite(BACKGROUND_FRAME, context.poseStack(), this.x, this.y, this.width, this.height);
+        ColorButton.drawSprite(context.poseStack(), BACKGROUND_ENDER, this.x, this.y, this.width, this.height, 0, 1, -1);
+        ColorButton.drawSprite(context.poseStack(), BACKGROUND_FRAME, this.x, this.y, this.width, this.height, 0, 1, -1);
         super.renderBackground(context, mouseX, mouseY);
     }
 
