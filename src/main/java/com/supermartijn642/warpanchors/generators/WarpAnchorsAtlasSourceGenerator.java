@@ -14,7 +14,7 @@ public class WarpAnchorsAtlasSourceGenerator extends AtlasSourceGenerator {
 
     @Override
     public void generate(){
-        this.guiAtlas()
+        this.atlas("minecraft", "gui")
             .texture(WarpAnchorScreen.BACKGROUND_ENDER)
             .texture(WarpAnchorScreen.BACKGROUND_FRAME)
             .texture(ColorButton.BACKGROUND)

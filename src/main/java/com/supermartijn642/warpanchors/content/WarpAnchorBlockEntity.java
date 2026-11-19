@@ -7,14 +7,13 @@ import com.supermartijn642.core.util.teleport.Teleporter;
 import com.supermartijn642.warpanchors.WarpAnchors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 public class WarpAnchorBlockEntity extends BaseBlockEntity {
@@ -114,12 +113,14 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
     }
 
     @Override
-    protected void writeData(ValueOutput output){
-        output.putString("name", this.name);
+    protected CompoundTag writeData(){
+        CompoundTag data = new CompoundTag();
+        data.putString("name", this.name);
+        return data;
     }
 
     @Override
-    protected void readData(ValueInput input){
-        this.name = input.getStringOr("name", "");
+    protected void readData(CompoundTag data){
+        this.name = data.getStringOr("name", "");
     }
 }

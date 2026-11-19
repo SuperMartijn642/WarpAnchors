@@ -45,7 +45,6 @@ public class WarpAnchorItemModel implements ItemModel.Unbaked {
         ItemModel colored = new BlockModelWrapper.Unbaked(this.coloredModel, List.of(TINT_SOURCE)).bake(context);
         return (output, item, resolver, displayContext, level, owner, seed) -> {
             WarpAnchorBlock.Color color = item.getOrDefault(WarpAnchorBlock.COLOR_DATA_COMPONENT, WarpAnchorBlock.Color.NONE);
-            output.appendModelIdentityElement(color);
             if(color == WarpAnchorBlock.Color.NONE)
                 colorless.update(output, item, resolver, displayContext, level, owner, seed);
             else
