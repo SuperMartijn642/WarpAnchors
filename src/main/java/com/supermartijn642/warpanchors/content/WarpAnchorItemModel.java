@@ -6,18 +6,18 @@ import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class WarpAnchorItemModel implements ItemModel.Unbaked {
 
     public static final MapCodec<WarpAnchorItemModel> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-        Identifier.CODEC.fieldOf("colorless_model").forGetter(m -> m.colorlessModel),
-        Identifier.CODEC.fieldOf("colored_model").forGetter(m -> m.coloredModel)
+        ResourceLocation.CODEC.fieldOf("colorless_model").forGetter(m -> m.colorlessModel),
+        ResourceLocation.CODEC.fieldOf("colored_model").forGetter(m -> m.coloredModel)
     ).apply(i, WarpAnchorItemModel::new));
     private static final ItemTintSource TINT_SOURCE = new ItemTintSource() {
         @Override
@@ -32,9 +32,9 @@ public class WarpAnchorItemModel implements ItemModel.Unbaked {
     };
     public static final MapCodec<ItemTintSource> TINT_CODEC = MapCodec.unit(TINT_SOURCE);
 
-    private final Identifier colorlessModel, coloredModel;
+    private final ResourceLocation colorlessModel, coloredModel;
 
-    public WarpAnchorItemModel(Identifier colorlessModel, Identifier coloredModel){
+    public WarpAnchorItemModel(ResourceLocation colorlessModel, ResourceLocation coloredModel){
         this.colorlessModel = colorlessModel;
         this.coloredModel = coloredModel;
     }
