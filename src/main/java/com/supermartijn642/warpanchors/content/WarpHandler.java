@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.supermartijn642.core.ClientUtils;
 import com.supermartijn642.warpanchors.WarpAnchors;
+import com.supermartijn642.warpanchors.WarpAnchorsConfig;
 import com.supermartijn642.warpanchors.content.packets.WarpPacket;
 import com.supermartijn642.warpanchors.extension.SubmitNodeCollectorExtension;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -103,11 +104,12 @@ public final class WarpHandler {
         Vector3fc cameraPosition = camera.position().toVector3f();
         Vector3fc lookDirection = camera.forwardVector();
         Vector3f dummyVector = new Vector3f();
+        int range = WarpAnchorsConfig.anchorRange.get();
         for(WarpAnchorBlockEntity anchor : anchors){
             if(anchor == centerAnchor || anchor.getLevel() != level)
                 continue;
             BlockPos anchorPos = anchor.getBlockPos();
-            if(anchorPos.distSqr(centerPos) > WarpAnchorBlock.RANGE_SQUARED + 0.1)
+            if(anchorPos.distSqr(centerPos) > range * range + 0.1)
                 continue;
 
             // Check if anchor is targeted
@@ -159,12 +161,13 @@ public final class WarpHandler {
         BlockStateModelSet blockModels = ClientUtils.getMinecraft().getModelManager().getBlockStateModelSet();
         BlockColors blockColors = ClientUtils.getMinecraft().getBlockColors();
         Vector3f dummyVector = new Vector3f();
+        int range = WarpAnchorsConfig.anchorRange.get();
         for(WarpAnchorBlockEntity anchor : anchors){
             if(anchor == centerAnchor || anchor.getLevel() != level)
                 continue;
             BlockState anchorState = anchor.getBlockState();
             BlockPos anchorPos = anchor.getBlockPos();
-            if(anchorPos.distSqr(centerPos) > WarpAnchorBlock.RANGE_SQUARED + 0.1)
+            if(anchorPos.distSqr(centerPos) > range * range + 0.1)
                 continue;
 
             // Extract model render state
