@@ -1,9 +1,9 @@
 package com.supermartijn642.warpanchors.mixin;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.supermartijn642.warpanchors.content.WarpHandler;
 import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
@@ -39,13 +39,13 @@ public class LevelRendererMixin {
     }
 
     @Inject(
-        method = "lambda$addLateDebugPass$6(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lnet/minecraft/world/phys/Vec3;)V",
+        method = "lambda$addLateDebugPass$5(Lnet/minecraft/client/renderer/FogParameters;Lnet/minecraft/world/phys/Vec3;)V",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/debug/DebugRenderer;renderAfterTranslucents(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;DDD)V"
         )
     )
-    private void renderAlwaysOnTop(GpuBufferSlice gpuBufferSlice, Vec3 cameraPos, CallbackInfo ci){
+    private void renderAlwaysOnTop(FogParameters fogParameters, Vec3 cameraPos, CallbackInfo ci){
         WarpHandler.renderAlwaysOnTop(cameraPos);
     }
 }
