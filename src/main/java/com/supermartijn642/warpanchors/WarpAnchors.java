@@ -65,7 +65,7 @@ public class WarpAnchors implements ModInitializer {
 
     private static void register(){
         RegistrationHandler handler = RegistrationHandler.get(MODID);
-        handler.registerBlock("warp_anchor", () -> new WarpAnchorBlock(BlockProperties.create().requiresCorrectTool().pushReaction(PushReaction.BLOCK).sound(SoundType.IRON).lightLevel(3).mapColor(MapColor.COLOR_LIGHT_GRAY).destroyTime(5).explosionResistance(6)));
+        handler.registerBlock("warp_anchor", () -> new WarpAnchorBlock(BlockProperties.create().requiresCorrectTool().pushReaction(PushReaction.BLOCK).sound(SoundType.METAL).lightLevel(3).mapColor(MapColor.COLOR_LIGHT_GRAY).destroyTime(5).explosionResistance(6)));
         handler.registerBlockEntityType("warp_anchor", () -> BaseBlockEntityType.create(WarpAnchorBlockEntity::new, warpAnchor));
         handler.registerItem("warp_anchor", () -> new BaseBlockItem(warpAnchor, ItemProperties.create().group(CREATIVE_GROUP).component(WarpAnchorBlock.COLOR_DATA_COMPONENT, WarpAnchorBlock.Color.NONE)){
             @Override

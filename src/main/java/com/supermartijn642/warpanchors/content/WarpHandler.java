@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
@@ -32,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -208,7 +208,7 @@ public final class WarpHandler {
         POSE_STACK.translate(renderPos.x, renderPos.y, renderPos.z);
         POSE_STACK.scale(1.1f, 1.1f, 1.1f);
         POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-        ModelBlockRenderer.renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), minecraft.getBlockRenderer().getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        minecraft.getBlockRenderer().getModelRenderer().renderModel(POSE_STACK.last(), outlineBufferSource.getBuffer(RenderType.outline(TextureAtlas.LOCATION_BLOCKS)), state, minecraft.getBlockRenderer().getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         POSE_STACK.popPose();
     }
 
@@ -217,7 +217,7 @@ public final class WarpHandler {
             return;
 
         Minecraft minecraft = ClientUtils.getMinecraft();
-        RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(minecraft.getMainRenderTarget().getDepthTexture(), 1.0);
+        RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT);
         MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
         BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
         POSE_STACK.pushPose();
@@ -234,7 +234,7 @@ public final class WarpHandler {
             POSE_STACK.translate(dummyVector.x, dummyVector.y, dummyVector.z);
             POSE_STACK.scale(1.1f, 1.1f, 1.1f);
             POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-            ModelBlockRenderer.renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            blockRenderer.getModelRenderer().renderModel(POSE_STACK.last(), bufferSource.getBuffer(ItemBlockRenderTypes.getRenderType(state)), state, blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             POSE_STACK.popPose();
             // Name
             if(isTargeted && !targetedAnchorName.isEmpty()){
