@@ -10,12 +10,12 @@ import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class WarpAnchorScreen extends BaseWidget {
 
-    public static final Identifier BACKGROUND_FRAME = WarpAnchors.identifier("gui/background_frame");
-    public static final Identifier BACKGROUND_ENDER = WarpAnchors.identifier("gui/background_ender");
+    public static final ResourceLocation BACKGROUND_FRAME = WarpAnchors.identifier("gui/background_frame");
+    public static final ResourceLocation BACKGROUND_ENDER = WarpAnchors.identifier("gui/background_ender");
 
     private final WarpAnchorBlockEntity anchor;
     private final boolean editable;

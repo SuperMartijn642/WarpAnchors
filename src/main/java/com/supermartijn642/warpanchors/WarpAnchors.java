@@ -18,7 +18,7 @@ import com.supermartijn642.warpanchors.content.packets.*;
 import com.supermartijn642.warpanchors.content.particle.WarpParticleType;
 import com.supermartijn642.warpanchors.generators.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
@@ -31,8 +31,8 @@ public class WarpAnchors {
 
     public static final String MODID = "warpanchors";
 
-    public static Identifier identifier(String path){
-        return Identifier.fromNamespaceAndPath(MODID, path);
+    public static ResourceLocation identifier(String path){
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     public static final PacketChannel CHANNEL = PacketChannel.create(MODID);

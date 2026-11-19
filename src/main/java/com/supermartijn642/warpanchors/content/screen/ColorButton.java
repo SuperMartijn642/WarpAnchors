@@ -9,13 +9,13 @@ import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import com.supermartijn642.warpanchors.content.WarpAnchorBlockEntity;
 import com.supermartijn642.warpanchors.content.packets.SetColorPacket;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class ColorButton extends AbstractButtonWidget {
 
-    public static final Identifier BACKGROUND = WarpAnchors.identifier("gui/color_button");
-    public static final Identifier COLOR = WarpAnchors.identifier("gui/color");
-    public static final Identifier CROSS = WarpAnchors.identifier("gui/cross");
+    public static final ResourceLocation BACKGROUND = WarpAnchors.identifier("gui/color_button");
+    public static final ResourceLocation COLOR = WarpAnchors.identifier("gui/color");
+    public static final ResourceLocation CROSS = WarpAnchors.identifier("gui/cross");
 
     private final WarpAnchorBlockEntity anchor;
     private final WarpAnchorBlock.Color color;
