@@ -2,7 +2,7 @@ package com.supermartijn642.warpanchors.content.screen;
 
 import com.supermartijn642.core.ClientUtils;
 import com.supermartijn642.core.TextComponents;
-import com.supermartijn642.core.gui.GuiGraphicsHelper;
+import com.supermartijn642.core.gui.ScreenUtils;
 import com.supermartijn642.core.gui.widget.BaseWidget;
 import com.supermartijn642.core.gui.widget.WidgetRenderContext;
 import com.supermartijn642.warpanchors.WarpAnchors;
@@ -49,26 +49,26 @@ public class WarpAnchorScreen extends BaseWidget {
     }
 
     @Override
-    public void renderBackground(WidgetRenderContext context, GuiGraphicsHelper graphics, int mouseX, int mouseY){
-        graphics.submitSprite(BACKGROUND_ENDER, this.x, this.y, this.width, this.height);
-        graphics.submitSprite(BACKGROUND_FRAME, this.x, this.y, this.width, this.height);
-        super.renderBackground(context, graphics, mouseX, mouseY);
+    public void renderBackground(WidgetRenderContext context, int mouseX, int mouseY){
+        ScreenUtils.drawGuiSprite(BACKGROUND_ENDER, context.poseStack(), this.x, this.y, this.width, this.height);
+        ScreenUtils.drawGuiSprite(BACKGROUND_FRAME, context.poseStack(), this.x, this.y, this.width, this.height);
+        super.renderBackground(context, mouseX, mouseY);
     }
 
     @Override
-    public void render(WidgetRenderContext context, GuiGraphicsHelper graphics, int mouseX, int mouseY){
-        super.render(context, graphics, mouseX, mouseY);
-        graphics.submitText(TextComponents.translation("warpanchors.screen.name").color(ChatFormatting.WHITE).bold().get(), 16, 14, p -> p.shadow());
-        graphics.submitText(TextComponents.translation("warpanchors.screen.color").color(ChatFormatting.WHITE).bold().get(), 16, 56, p -> p.shadow());
+    public void render(WidgetRenderContext context, int mouseX, int mouseY){
+        super.render(context, mouseX, mouseY);
+        ScreenUtils.drawStringWithShadow(context.poseStack(), TextComponents.translation("warpanchors.screen.name").color(ChatFormatting.WHITE).bold().get(), 16, 14, -1);
+        ScreenUtils.drawStringWithShadow(context.poseStack(), TextComponents.translation("warpanchors.screen.color").color(ChatFormatting.WHITE).bold().get(), 16, 56, -1);
     }
 
     @Override
-    public void renderTooltips(WidgetRenderContext context, GuiGraphicsHelper graphics, int mouseX, int mouseY){
-        super.renderTooltips(context, graphics, mouseX, mouseY);
+    public void renderTooltips(WidgetRenderContext context, int mouseX, int mouseY){
+        super.renderTooltips(context, mouseX, mouseY);
         if(mouseX >= 12 && mouseX <= 49 && mouseY >= 12 && mouseY <= 22)
-            graphics.submitTooltipForTopStratum(t -> t.text(TextComponents.translation("warpanchors.screen.name.hint").get()), mouseX, mouseY);
+            ScreenUtils.drawTooltip(context.poseStack(), TextComponents.translation("warpanchors.screen.name.hint").get(), mouseX, mouseY);
         else if(mouseX >= 12 && mouseX <= 49 && mouseY >= 54 && mouseY <= 64)
-            graphics.submitTooltipForTopStratum(t -> t.text(TextComponents.translation("warpanchors.screen.color.hint").get()), mouseX, mouseY);
+            ScreenUtils.drawTooltip(context.poseStack(), TextComponents.translation("warpanchors.screen.color.hint").get(), mouseX, mouseY);
     }
 
     @Override
