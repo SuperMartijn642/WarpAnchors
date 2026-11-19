@@ -3,7 +3,7 @@ plugins {
     id "idea"
     id "java"
     id "net.minecraftforge.gradle" version "7.0.25"
-    id "me.modmuss50.mod-publish-plugin" version "2.0.0"
+    id "me.modmuss50.mod-publish-plugin" version "2.2.1"
 }
 
 version = mod_version + "-forge-" + minecraft_suffix
@@ -162,6 +162,7 @@ publishMods {
         if (!modrinth_optional_dependency_ids.isEmpty())
             modrinth_optional_dependency_ids.split(" ").each it::optional
         publishing_game_versions.split(" ").each minecraftVersions::add
+        environment = CLIENT_AND_SERVER
     }
 }
 
