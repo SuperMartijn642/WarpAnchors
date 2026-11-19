@@ -16,7 +16,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 @Mod(value = WarpAnchors.MODID, dist = Dist.CLIENT)
@@ -25,9 +24,9 @@ public class WarpAnchorsClient {
     public WarpAnchorsClient(IEventBus eventBus){
         ClientRegistrationHandler handler = ClientRegistrationHandler.get(WarpAnchors.MODID);
         handler.registerItemModelType("colorable", WarpAnchorItemModel.CODEC);
-        eventBus.addListener((Consumer<RegisterColorHandlersEvent.BlockTintSources>)e -> {
+        eventBus.addListener((Consumer<RegisterColorHandlersEvent.Block>)e -> {
             e.register(
-                List.of(state -> state.getValue(WarpAnchorBlock.COLOR).getTint()),
+                (state, level, pos, tintIndex) -> state.getValue(WarpAnchorBlock.COLOR).getTint(),
                 WarpAnchors.warpAnchor
             );
         });

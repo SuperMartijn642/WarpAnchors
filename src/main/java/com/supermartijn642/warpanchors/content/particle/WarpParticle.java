@@ -4,10 +4,10 @@ import com.supermartijn642.warpanchors.content.WarpAnchorBlock;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
-import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import org.joml.Math;
 
@@ -57,8 +57,8 @@ public class WarpParticle extends SingleQuadParticle {
     }
 
     @Override
-    protected int getLightCoords(float a){
-        return LightCoordsUtil.FULL_BRIGHT;
+    protected int getLightColor(float a){
+        return LightTexture.FULL_BRIGHT;
     }
 
     @Override
