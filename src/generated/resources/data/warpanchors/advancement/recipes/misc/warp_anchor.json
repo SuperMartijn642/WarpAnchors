@@ -5,10 +5,10 @@
       "id": "warpanchors:warp_anchor"
     },
     "title": {
-      "translate": "warpanchors.advancement.recipes/warp_anchor.title"
+      "translate": "warpanchors.advancement.recipes/misc/warp_anchor.title"
     },
     "description": {
-      "translate": "warpanchors.advancement.recipes/warp_anchor.description"
+      "translate": "warpanchors.advancement.recipes/misc/warp_anchor.description"
     },
     "frame": "task",
     "show_toast": false,

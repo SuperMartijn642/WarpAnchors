@@ -5,33 +5,27 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.supermartijn642.core.ClientUtils;
 import com.supermartijn642.warpanchors.WarpAnchors;
 import com.supermartijn642.warpanchors.content.packets.WarpPacket;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.block.BlockTintSource;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.BlockStateModelSet;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.util.RandomSource;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
@@ -53,10 +47,9 @@ public final class WarpHandler {
      * If an anchor is further than this threshold, it will be rendered as if at the threshold distance.
      */
     private static final float ENLARGE_THRESHOLD = 20, ENLARGE_NAME_THRESHOLD = 5;
-    private static final Matrix4fc IDENTITY_MATRIX = new Matrix4f().identity();
-    private static final RandomSource RANDOM_SOURCE = RandomSource.createThreadLocalInstance();
     public static FeatureRenderDispatcher FEATURE_RENDER_DISPATCHER;
-    private static final List<BlockModelRenderState> ANCHOR_RENDER_STATES = new ArrayList<>();
+    private static final List<BlockState> ANCHOR_STATES = new ArrayList<>();
+    private static final IntList ANCHOR_TINTS = new IntArrayList();
     private static final List<BlockPos.MutableBlockPos> ANCHOR_POSITIONS = new ArrayList<>();
     private static final PoseStack POSE_STACK = new PoseStack();
     private static final Vector3f CAMERA_FORWARD = new Vector3f(), CAMERA_UP = new Vector3f();
@@ -74,7 +67,7 @@ public final class WarpHandler {
     }
 
     private static @Nullable WarpAnchorBlockEntity getStandingOnAnchor(){
-        ClientLevel level = ClientUtils.getWorld();
+        Level level = ClientUtils.getWorld();
         Player player = ClientUtils.getPlayer();
         if(player == null || level == null)
             return null;
@@ -102,7 +95,7 @@ public final class WarpHandler {
 
         WarpAnchorBlockEntity targetAnchor = null;
         float targetedAnchorAngle = (float)Math.PI;
-        ClientLevel level = ClientUtils.getWorld();
+        Level level = ClientUtils.getWorld();
         Camera camera = ClientUtils.getMinecraft().gameRenderer.getMainCamera();
         Vector3fc cameraPosition = camera.position().toVector3f();
         Vector3fc lookDirection = camera.forwardVector();
@@ -132,8 +125,9 @@ public final class WarpHandler {
 
     public static boolean extractRenderState(Camera camera){
         int anchors = extractAnchors(camera);
-        for(int i = ANCHOR_RENDER_STATES.size() - anchors; i > 0; i--){
-            ANCHOR_RENDER_STATES.removeLast();
+        for(int i = ANCHOR_STATES.size() - anchors; i > 0; i--){
+            ANCHOR_STATES.removeLast();
+            ANCHOR_TINTS.removeInt(ANCHOR_TINTS.size() - 1);
             ANCHOR_POSITIONS.removeLast();
         }
         return anchors > 0;
@@ -160,8 +154,7 @@ public final class WarpHandler {
         targetedAnchorIndex = -1;
         int rendered = 0;
         float targetedAnchorAngle = (float)Math.PI;
-        ClientLevel level = ClientUtils.getWorld();
-        BlockStateModelSet blockModels = ClientUtils.getMinecraft().getModelManager().getBlockStateModelSet();
+        Level level = ClientUtils.getWorld();
         BlockColors blockColors = ClientUtils.getMinecraft().getBlockColors();
         Vector3f dummyVector = new Vector3f();
         for(WarpAnchorBlockEntity anchor : anchors){
@@ -173,27 +166,14 @@ public final class WarpHandler {
                 continue;
 
             // Extract model render state
-            BlockPos.MutableBlockPos renderPos;
-            BlockModelRenderState blockRenderState;
-            if(rendered >= ANCHOR_RENDER_STATES.size()){
-                ANCHOR_POSITIONS.add(renderPos = new BlockPos.MutableBlockPos());
-                ANCHOR_RENDER_STATES.add(blockRenderState = new BlockModelRenderState());
-            }else{
-                renderPos = ANCHOR_POSITIONS.get(rendered);
-                blockRenderState = ANCHOR_RENDER_STATES.get(rendered);
-            }
-            renderPos.set(anchorPos);
-            BlockStateModel model = blockModels.get(anchorState);
-            long seed = anchorState.getSeed(anchorPos);
-            RANDOM_SOURCE.setSeed(seed);
-            boolean hasTranslucency = model.hasMaterialFlag(level, anchorPos, anchorState, RANDOM_SOURCE, BakedQuad.FLAG_TRANSLUCENT);
-            QuadEmitter emitter = blockRenderState.setupMesh(IDENTITY_MATRIX, hasTranslucency);
-            RANDOM_SOURCE.setSeed(seed);
-            model.emitQuads(emitter, level, anchorPos, anchorState, RANDOM_SOURCE, _ -> false);
-            IntList tintLayers = blockRenderState.tintLayers();
-            tintLayers.clear();
-            for(BlockTintSource tintSource : blockColors.getTintSources(anchorState))
-                tintLayers.add(tintSource.colorInWorld(anchorState, level, anchorPos));
+            if(rendered >= ANCHOR_STATES.size()){
+                ANCHOR_POSITIONS.add(new BlockPos.MutableBlockPos());
+                ANCHOR_STATES.add(anchorState);
+                ANCHOR_TINTS.add(0);
+            }else
+                ANCHOR_STATES.set(rendered, anchorState);
+            ANCHOR_POSITIONS.get(rendered).set(anchorPos);
+            ANCHOR_TINTS.set(rendered, blockColors.getColor(anchorState, level, anchorPos, 0));
 
             // Check if anchor is targeted
             float angle = lookDirection.angle(dummyVector.set(anchorPos.getX() + 0.5, anchorPos.getY() + 0.5, anchorPos.getZ() + 0.5).sub(cameraPosition));
@@ -210,33 +190,33 @@ public final class WarpHandler {
     }
 
     public static void submitRenderState(CameraRenderState cameraRenderState){
+        Minecraft minecraft = ClientUtils.getMinecraft();
         if(FEATURE_RENDER_DISPATCHER == null){
-            Minecraft minecraft = ClientUtils.getMinecraft();
             RenderBuffers renderBuffers = minecraft.renderBuffers();
             FEATURE_RENDER_DISPATCHER = new FeatureRenderDispatcher(
                 new SubmitNodeStorage(),
-                minecraft.getModelManager(),
+                minecraft.getBlockRenderer(),
                 renderBuffers.bufferSource(),
                 minecraft.getAtlasManager(),
                 renderBuffers.outlineBufferSource(),
                 renderBuffers.crumblingBufferSource(),
-                minecraft.font,
-                minecraft.gameRenderer.getGameRenderState()
+                minecraft.font
             );
         }
         SubmitNodeStorage output = FEATURE_RENDER_DISPATCHER.getSubmitNodeStorage();
 
-        if(ANCHOR_RENDER_STATES.isEmpty()){
+        if(ANCHOR_STATES.isEmpty()){
             submittedAlwaysOnTopNodes = false;
             return;
         }
         submittedAlwaysOnTopNodes = true;
 
+        BlockRenderDispatcher blockRenderer = minecraft.getBlockRenderer();
         Vec3 cameraPos = cameraRenderState.pos;
         POSE_STACK.pushPose();
         POSE_STACK.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
         Vector3f dummyVector = new Vector3f();
-        for(int i = 0; i < ANCHOR_RENDER_STATES.size(); i++){
+        for(int i = 0; i < ANCHOR_STATES.size(); i++){
             boolean isTargeted = targetedAnchorIndex == i;
             // Block
             BlockPos.MutableBlockPos pos = ANCHOR_POSITIONS.get(i);
@@ -246,12 +226,13 @@ public final class WarpHandler {
                 dummyVector.sub((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z)
                     .mul(ENLARGE_THRESHOLD / distance)
                     .add((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z);
-            BlockModelRenderState blockRenderState = ANCHOR_RENDER_STATES.get(i);
+            BlockState state = ANCHOR_STATES.get(i);
+            int tint = ANCHOR_TINTS.getInt(i);
             POSE_STACK.pushPose();
             POSE_STACK.translate(dummyVector.x, dummyVector.y, dummyVector.z);
             POSE_STACK.scale(1.1f, 1.1f, 1.1f);
             POSE_STACK.translate(-0.5f, -0.5f, -0.5f);
-            blockRenderState.submit(POSE_STACK, output, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, isTargeted ? targetedAnchorColor.getTint() : 0);
+            output.submitBlockModel(POSE_STACK, ItemBlockRenderTypes.getRenderType(state), blockRenderer.getBlockModel(state), ARGB.redFloat(tint), ARGB.greenFloat(tint), ARGB.blueFloat(tint), LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, isTargeted ? targetedAnchorColor.getTint() : 0);
             POSE_STACK.popPose();
             // Name
             if(isTargeted && !targetedAnchorName.isEmpty()){
@@ -266,7 +247,7 @@ public final class WarpHandler {
                     CAMERA_FORWARD.mulAdd(-distanceScale * 1 + 0.4f, dummyVector, dummyVector);
                 }else
                     dummyVector.add(CAMERA_UP);
-                output.submitNameTag(POSE_STACK, new Vec3(dummyVector.sub(0, 0.5f, 0)), 0, Component.literal(targetedAnchorName), true, LightCoordsUtil.FULL_BRIGHT, dummyVector.distanceSquared((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z), cameraRenderState);
+                output.submitNameTag(POSE_STACK, new Vec3(dummyVector.sub(0, 0.5f, 0)), 0, Component.literal(targetedAnchorName), true, LightTexture.FULL_BRIGHT, dummyVector.distanceSquared((float)cameraPos.x, (float)cameraPos.y, (float)cameraPos.z), cameraRenderState);
             }
         }
         POSE_STACK.popPose();

@@ -2,16 +2,19 @@ package com.supermartijn642.warpanchors.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.supermartijn642.warpanchors.content.WarpHandler;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.state.level.LevelRenderState;
-import org.joml.Matrix4fc;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,15 +28,18 @@ public class LevelRendererMixin {
     @Final
     @Shadow
     private LevelRenderState levelRenderState;
+    @Final
+    @Shadow
+    private RenderBuffers renderBuffers;
 
     @Inject(
-        method = "extractLevel",
+        method = "renderLevel",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/LevelRenderer;extractVisibleBlockEntities(Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/state/level/LevelRenderState;)V"
+            target = "Lnet/minecraft/client/renderer/LevelRenderer;extractVisibleBlockEntities(Lnet/minecraft/client/Camera;FLnet/minecraft/client/renderer/state/LevelRenderState;)V"
         )
     )
-    private void extract(DeltaTracker deltaTracker, Camera camera, float deltaPartialTick, CallbackInfo ci){
+    private void extract(GraphicsResourceAllocator graphicsAllocator, DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, Matrix4f cameraRotationMatrix, Matrix4f projectionMatrix, Matrix4f otherProjectionMatrix, GpuBufferSlice gpuBufferSlice, Vector4f fogColor, boolean renderSky, CallbackInfo ci){
         if(WarpHandler.extractRenderState(camera))
             this.levelRenderState.haveGlowingEntities = true;
     }
@@ -47,7 +53,7 @@ public class LevelRendererMixin {
     }
 
     @ModifyExpressionValue(
-        method = "lambda$addLateDebugPass$0(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lcom/mojang/blaze3d/resource/ResourceHandle;Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lorg/joml/Matrix4fc;)V",
+        method = "method_75413(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lcom/mojang/blaze3d/resource/ResourceHandle;Lnet/minecraft/client/renderer/state/CameraRenderState;Lorg/joml/Matrix4f;)V",
         at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/client/renderer/gizmos/DrawableGizmoPrimitives;isEmpty()Z"
@@ -58,14 +64,15 @@ public class LevelRendererMixin {
     }
 
     @Inject(
-        method = "lambda$addLateDebugPass$0(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lcom/mojang/blaze3d/resource/ResourceHandle;Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lorg/joml/Matrix4fc;)V",
+        method = "method_75413(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lcom/mojang/blaze3d/resource/ResourceHandle;Lnet/minecraft/client/renderer/state/CameraRenderState;Lorg/joml/Matrix4f;)V",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/renderer/gizmos/DrawableGizmoPrimitives;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lorg/joml/Matrix4fc;)V",
+            target = "Lnet/minecraft/client/renderer/gizmos/DrawableGizmoPrimitives;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/renderer/state/CameraRenderState;Lorg/joml/Matrix4f;)V",
             shift = At.Shift.BEFORE
         )
     )
-    private void renderAlwaysOnTop(GpuBufferSlice gpuBufferSlice, ResourceHandle<?> resourceHandle, CameraRenderState cameraRenderState, Matrix4fc matrix4fc, CallbackInfo ci){
+    private void renderAlwaysOnTop(GpuBufferSlice gpuBufferSlice, ResourceHandle<?> resourceHandle, CameraRenderState cameraRenderState, Matrix4f matrix4f, CallbackInfo ci){
         WarpHandler.FEATURE_RENDER_DISPATCHER.renderAllFeatures();
+        this.renderBuffers.bufferSource().endBatch();
     }
 }

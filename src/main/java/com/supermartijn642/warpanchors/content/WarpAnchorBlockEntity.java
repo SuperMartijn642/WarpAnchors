@@ -46,7 +46,7 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
         // Don't warp the player into blocks above the anchor
         Vec3 offset = new Vec3(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1.1, this.worldPosition.getZ() + 0.5).subtract(player.position());
         if(!this.level.noCollision(player, player.getBoundingBox().move(offset))){
-            player.sendOverlayMessage(TextComponents.translation("warpanchors.warp.obstructed").color(ChatFormatting.RED).get());
+            player.displayClientMessage(TextComponents.translation("warpanchors.warp.obstructed").color(ChatFormatting.RED).get(), true);
             return;
         }
         BlockPos oldPos = player.blockPosition();
