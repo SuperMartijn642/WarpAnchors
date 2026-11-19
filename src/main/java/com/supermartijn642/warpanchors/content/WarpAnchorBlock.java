@@ -73,7 +73,7 @@ public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
     }
 
     @Override
-    protected ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state, boolean includeData){
+    public ItemStack getCloneItemStack(LevelReader world, BlockPos pos, BlockState state){
         ItemStack stack = new ItemStack(this);
         stack.set(COLOR_DATA_COMPONENT, state.getValue(COLOR));
         return stack;

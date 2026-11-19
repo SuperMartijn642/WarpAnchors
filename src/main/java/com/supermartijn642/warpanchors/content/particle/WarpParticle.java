@@ -9,6 +9,7 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.joml.Math;
 
@@ -31,9 +32,9 @@ public class WarpParticle extends TextureSheetParticle {
         this.size = MIN_SIZE + (MAX_SIZE - MIN_SIZE) * random.nextFloat();
         if(color == WarpAnchorBlock.Color.NONE)
             color = WarpAnchorBlock.Color.LIGHT_BLUE;
-        this.rCol = ARGB.redFloat(color.getTint());
-        this.gCol = ARGB.greenFloat(color.getTint());
-        this.bCol = ARGB.blueFloat(color.getTint());
+        this.rCol = ARGB.red(color.getTint()) / 255f;
+        this.gCol = ARGB.green(color.getTint()) / 255f;
+        this.bCol = ARGB.blue(color.getTint()) / 255f;
     }
 
     @Override
@@ -52,9 +53,9 @@ public class WarpParticle extends TextureSheetParticle {
     public void render(VertexConsumer buffer, Camera camera, float partialTickTime){
         float age = (this.age + partialTickTime);
         if(age >= this.warmupTime)
-            this.quadSize = Math.cos((age - this.warmupTime) / this.degradeTime * Math.PI_OVER_2_f) * this.size;
+            this.quadSize = Math.cos((age - this.warmupTime) / this.degradeTime * Mth.HALF_PI) * this.size;
         else
-            this.quadSize = Math.sin(age / this.warmupTime * Math.PI_OVER_2_f) * this.size;
+            this.quadSize = Math.sin(age / this.warmupTime * Mth.HALF_PI) * this.size;
         super.render(buffer, camera, partialTickTime);
     }
 
