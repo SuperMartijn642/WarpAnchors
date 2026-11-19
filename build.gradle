@@ -98,7 +98,7 @@ minecraft {
             args "--mod", mod_id
             args "--all"
             args "--output", file("src/generated/resources/")
-            args "--existing", file("src/main/resources/")
+            args "--existing", layout.buildDirectory.file("/data_resources").map { it.asFile }.get()
         }
     }
 }
@@ -130,7 +130,7 @@ tasks.register('prepareDataResources', Sync) {
 
 // Run prepareDataResources before prepareRunData
 tasks.configureEach {
-    if (it.name == "prepareDataRun")
+    if (it.name == "runData")
         it.dependsOn "prepareDataResources"
 }
 
