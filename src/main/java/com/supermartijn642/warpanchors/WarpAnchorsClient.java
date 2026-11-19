@@ -13,8 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 
-import java.util.List;
-
 public class WarpAnchorsClient {
 
     public static void init(){
@@ -22,7 +20,7 @@ public class WarpAnchorsClient {
         handler.registerItemModelType("colorable", WarpAnchorItemModel.CODEC);
         RegisterColorHandlersEvent.Block.BUS.addListener(e -> {
             e.register(
-                List.of(state -> state.getValue(WarpAnchorBlock.COLOR).getTint()),
+                (state, level, pos, tintIndex) -> state.getValue(WarpAnchorBlock.COLOR).getTint(),
                 WarpAnchors.warpAnchor
             );
         });

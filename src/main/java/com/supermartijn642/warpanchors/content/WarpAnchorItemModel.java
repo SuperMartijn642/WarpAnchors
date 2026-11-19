@@ -4,16 +4,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
+import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.joml.Matrix4fc;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public class WarpAnchorItemModel implements ItemModel.Unbaked {
 
@@ -42,9 +40,9 @@ public class WarpAnchorItemModel implements ItemModel.Unbaked {
     }
 
     @Override
-    public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transformation){
-        ItemModel colorless = new CuboidItemModelWrapper.Unbaked(this.colorlessModel, Optional.empty(), List.of()).bake(context, transformation);
-        ItemModel colored = new CuboidItemModelWrapper.Unbaked(this.coloredModel, Optional.empty(), List.of(TINT_SOURCE)).bake(context, transformation);
+    public ItemModel bake(ItemModel.BakingContext context){
+        ItemModel colorless = new BlockModelWrapper.Unbaked(this.colorlessModel, List.of()).bake(context);
+        ItemModel colored = new BlockModelWrapper.Unbaked(this.coloredModel, List.of(TINT_SOURCE)).bake(context);
         return (output, item, resolver, displayContext, level, owner, seed) -> {
             WarpAnchorBlock.Color color = item.getOrDefault(WarpAnchorBlock.COLOR_DATA_COMPONENT, WarpAnchorBlock.Color.NONE);
             output.appendModelIdentityElement(color);
