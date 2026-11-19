@@ -59,6 +59,7 @@ public class WarpAnchors implements ModInitializer {
         CHANNEL.registerMessage(WarpPacket.class, WarpPacket::new, PacketDirection.CLIENT_TO_SERVER, true);
 
         register();
+        WarpAnchorsConfig.init();
         if(CommonUtils.getEnvironmentSide().isClient())
             registerGenerators();
     }
