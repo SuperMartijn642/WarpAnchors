@@ -54,8 +54,8 @@ public class WarpAnchorItemModel implements ItemModel.Unbaked {
 
     @Override
     public void resolveDependencies(Resolver resolver){
-        resolver.markDependency(this.colorlessModel);
-        resolver.markDependency(this.coloredModel);
+        resolver.resolve(this.colorlessModel);
+        resolver.resolve(this.coloredModel);
     }
 
     @Override

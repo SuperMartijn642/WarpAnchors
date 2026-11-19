@@ -121,6 +121,6 @@ public class WarpAnchorBlockEntity extends BaseBlockEntity {
 
     @Override
     protected void readData(CompoundTag data){
-        this.name = data.getStringOr("name", "");
+        this.name = data.getString("name");
     }
 }
