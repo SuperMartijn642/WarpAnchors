@@ -38,7 +38,6 @@ import java.util.function.Consumer;
 
 public class WarpAnchorBlock extends BaseBlock implements EntityHoldingBlock {
 
-    public static int RANGE = 100, RANGE_SQUARED = RANGE * RANGE;
     public static int MAX_NAME_LENGTH = 20;
 
     public static final DataComponentType<Color> COLOR_DATA_COMPONENT = DataComponentType.<Color>builder().persistent(Color.CODEC).networkSynchronized(Color.STREAM_CODEC).build();
