@@ -57,3 +57,10 @@ type = "required"
 versionRange = "${core_library_dependency}"
 ordering = "NONE"
 side = "BOTH"
+# Add a dependency on SuperMartijn642's Config Lib
+[[dependencies.${ mod_id }]]
+modId = "supermartijn642configlib"
+type = "required"
+versionRange = "${config_library_dependency}"
+ordering = "NONE"
+side = "BOTH"
