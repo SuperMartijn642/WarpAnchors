@@ -16,6 +16,8 @@ Anchors can be given a name and a color to create separate networks.
 
 <img width="640" src="assets/warping.gif" alt="A player standing on a Warp Anchor sees other anchors through walls, looks at one and warps to it, several times">
 
+![Separator](assets/separator-goo-screen.webp)
+
 ### Features
 - Warp between anchors up to 100 blocks apart, in any direction (the range can be changed in the config)
 - Anchors you can warp to show through walls, with the name of the one you look at
@@ -23,6 +25,8 @@ Anchors can be given a name and a color to create separate networks.
 
 For the full description and the recipe, see the <img height="16" src="https://cdn.simpleicons.org/modrinth/00AF5C" alt=""> [Modrinth](https://modrinth.com/mod/warp-anchors)
 or <img height="16" src="https://cdn.simpleicons.org/curseforge/F16436" alt=""> [CurseForge](https://www.curseforge.com/minecraft/mc-mods/warp-anchors) page.
+
+![Separator](assets/separator-goo-orange.webp)
 
 ### Issues and Suggestions
 Found a bug or have a suggestion? Please open an [issue](https://github.com/SuperMartijn642/WarpAnchors/issues).
