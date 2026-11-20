@@ -11,5 +11,6 @@
   "warpanchors.screen.color.hint": "Colored anchors can only warp to colorless anchors and anchors of the same color",
   "warpanchors.screen.color_button.narrate": "Select color %s",
   "warpanchors.screen.color.none": "None",
-  "warpanchors.screen.narrate": "Warp Anchor configuration screen"
+  "warpanchors.screen.narrate": "Warp Anchor configuration screen",
+  "warpanchors.warp.obstructed": "Space above anchor is obstructed"
 }
